@@ -51,7 +51,10 @@ public class Circle extends Shape {
         }
         return area;
     }
-
+    public int getRadius()
+    {
+        return radius;
+    }
     public String toString() {
         return String.format("Circle: (%d,%d) area=%d pattern=%s", location.getX(), location.getY(), area(), pattern);
     }

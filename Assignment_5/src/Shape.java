@@ -1,5 +1,3 @@
-import java.util.regex.Pattern;
-
 public abstract class Shape {
 
     protected char[][] grids;

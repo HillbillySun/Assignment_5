@@ -118,4 +118,9 @@ public class RightTriangle extends Shape {
     public String toString() {
         return String.format("RightTriangle: (%d,%d) area=%d pattern=%s", location.getX(), location.getY(), area(), pattern);
     }
+
+    public int getHeight()
+    {return height;}
+    public int getWidth()
+    {return width;}
 }
