@@ -1,8 +1,5 @@
-import javax.swing.plaf.metal.MetalIconFactory;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.regex.Pattern;
 
 public class AvoidConflictShapeCanvas implements ShapeCanvas {
     private List<Shape> shapes;
@@ -22,8 +19,9 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
 
     @Override
     public boolean addShape(int x, int y, char pattern, int... params) {
-        boolean isAdd = true;
-        if (x < canvas.length || y < canvas[0].length) {
+        boolean isAdd = false;
+        if (x < canvas.length && y < canvas[0].length && x >= 0 && y >= 0) {
+            isAdd=true;
             if (params.length == 1) {
                 Circle circle = new Circle(new Location(x, y), pattern, params[0]);
                 int[] center = new int[2];
@@ -37,9 +35,9 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
                     FillLoop:
                     for (int i = 0; i < circle.getGrids().length; i++) {
                         for (int j = 0; j < circle.getGrids()[0].length; j++) {
-                            if (canvas[i + RowT][j + ColT] == ' ') {
-                                canvas[i + RowT][j + ColT] = pattern;
-                            } else {
+                            if (canvas[i + RowT][j + ColT] == ' ' && circle.getGrids()[i][j] == pattern) {
+                                canvas[i + RowT][j + ColT] = circle.getGrids()[i][j];
+                            } else if (canvas[i + RowT][j + ColT] != ' ' && circle.getGrids()[i][j] == pattern) {
                                 isAdd = false;
                                 break FillLoop;
                             }
@@ -56,6 +54,9 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
                 if (params[2] == 0) {
                     rightTriangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.LEFT_UP);
                     if (canvas.length - rightTriangle.location.getX() < rightTriangle.getHeight() || canvas[0].length - rightTriangle.location.getY() < rightTriangle.getWidth()) {
+                        isAdd=false;
+                    }
+                    else {
                         int rowT = rightTriangle.location.getX();
                         int colT = rightTriangle.location.getY();
                         FillLoop:
@@ -139,6 +140,7 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
                     if (Spoint[0] > canvas.length || Spoint[1] > canvas[0].length) {
                         isAdd = false;
                     }
+                    else
                     {
                         int rowT = rightTriangle.location.getX();
                         int colT = rightTriangle.location.getY();
@@ -173,7 +175,7 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
         int count = 0;
         for (int i = 0; i < canvas.length; i++) {
             for (int j = 0; j < canvas[0].length; j++) {
-                if (canvas[i][j] != ' ') {
+                if (canvas[i][j] == ' ') {
                     count++;
                 }
             }
@@ -189,7 +191,7 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
     @Override
     public List<Shape> getShapesByArea() {
         for (int i = 0; i < shapes.size() - 1; i++) {
-            for (int j = i; j < shapes.size() - i - 1; j++) {
+            for (int j = 0; j < shapes.size() - i - 1; j++) {
                 if (shapes.get(j + 1).area() < shapes.get(j).area()) {
                     Shape temp = shapes.get(j + 1);
                     shapes.set(j + 1, shapes.get(j));
@@ -207,12 +209,18 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
     @Override
     public List<Shape> getShapesByLocation() {
         for (int i = 0; i < shapes.size(); i++) {
-            for (int j = i; j < shapes.size() - i - 1; j++) {
+            for (int j = 0; j < shapes.size() - i - 1; j++) {
                 if (shapes.get(j + 1).location.getX() < shapes.get(j).location.getX()) {
                     Shape temp = shapes.get(j + 1);
                     shapes.set(j + 1, shapes.get(j));
                     shapes.set(j, temp);
                 } else if (shapes.get(j + 1).location.getX() == shapes.get(j).location.getX() && shapes.get(j + 1).location.getY() < shapes.get(j).location.getY()) {
+                    Shape temp = shapes.get(j + 1);
+                    shapes.set(j + 1, shapes.get(j));
+                    shapes.set(j, temp);
+                }
+                else if (shapes.get(j + 1).location.getX() == shapes.get(j).location.getX() && shapes.get(j + 1).location.getY() == shapes.get(j).location.getY() && shapes.get(j+1).pattern < shapes.get(j).pattern)
+                {
                     Shape temp = shapes.get(j + 1);
                     shapes.set(j + 1, shapes.get(j));
                     shapes.set(j, temp);
