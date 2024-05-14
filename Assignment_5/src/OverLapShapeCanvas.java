@@ -18,54 +18,58 @@ public class OverLapShapeCanvas implements ShapeCanvas {
 
     @Override
     public boolean addShape(int x, int y, char pattern, int... params) {
-        boolean isAdd = true;
-        if (params.length == 1) {
-            Circle circle = new Circle(new Location(x, y), pattern, params[0]);
-            int count = 0;
-            int RowT = circle.location.getX();
-            int ColT = circle.location.getY();
-            for (int i = 0; i < circle.getGrids().length; i++) {
-                for (int j = 0; j < circle.getGrids()[0].length; j++) {
-                    try {
-                        if (circle.getGrids()[i][j] == pattern) {
-                            canvas[i + RowT][j + ColT] = circle.getGrids()[i][j];
-                            count++;
+        boolean isAdd = false;
+        if (x >= 0 && y >= 0 && x < canvas.length && y < canvas[0].length)
+        {
+            isAdd=true;
+            if (params.length == 1) {
+                Circle circle = new Circle(new Location(x, y), pattern, params[0]);
+                int count = 0;
+                int RowT = circle.location.getX();
+                int ColT = circle.location.getY();
+                for (int i = 0; i < circle.getGrids().length; i++) {
+                    for (int j = 0; j < circle.getGrids()[0].length; j++) {
+                        try {
+                            if (circle.getGrids()[i][j] == pattern) {
+                                canvas[i + RowT][j + ColT] = circle.getGrids()[i][j];
+                                count++;
+                            }
+                        } catch (ArrayIndexOutOfBoundsException ignore) {
                         }
-                    } catch (ArrayIndexOutOfBoundsException ignore) {
                     }
                 }
-            }
-            if (count == 0) {
-                isAdd = false;
+                if (count == 0) {
+                    isAdd = false;
+                } else {
+                    shapes.add(circle);
+                }
             } else {
-                shapes.add(circle);
+                switch (params[2]) {
+                    case 0: {
+                        RightTriangle triangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.LEFT_UP);
+                        isAdd = fillCavans(triangle);
+                    }
+                    break;
+                    case 1: {
+                        RightTriangle triangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.LEFT_DOWN);
+                        isAdd = fillCavans(triangle);
+                    }
+                    break;
+                    case 2: {
+                        RightTriangle triangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.RIGHT_UP);
+                        isAdd = fillCavans(triangle);
+                    }
+                    break;
+                    case 3: {
+                        RightTriangle triangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.RIGHT_DOWN);
+                        isAdd = fillCavans(triangle);
+                    }
+                    break;
+                }
             }
-        } else {
-            switch (params[2]) {
-                case 0: {
-                    RightTriangle triangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.LEFT_UP);
-                    isAdd = fillCavans(triangle);
-                }
-                break;
-                case 1: {
-                    RightTriangle triangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.LEFT_DOWN);
-                    isAdd = fillCavans(triangle);
-                }
-                break;
-                case 2: {
-                    RightTriangle triangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.RIGHT_UP);
-                    isAdd = fillCavans(triangle);
-                }
-                break;
-                case 3: {
-                    RightTriangle triangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.RIGHT_DOWN);
-                    isAdd = fillCavans(triangle);
-                }
-                break;
+            if (isAdd) {
+                count++;
             }
-        }
-        if (isAdd) {
-            count++;
         }
         return isAdd;
     }
@@ -74,7 +78,6 @@ public class OverLapShapeCanvas implements ShapeCanvas {
     public int getSpaceGridCount() {
         int count = 0;
         for (int i = 0; i < canvas.length; i++) {
-            int check=0;
             for (int j = 0; j < canvas[0].length; j++) {
                 if (canvas[i][j] == ' ') {
                     count++;
@@ -135,7 +138,6 @@ public class OverLapShapeCanvas implements ShapeCanvas {
     public char[][] getCanvas() {
         return canvas;
     }
-
     public boolean fillCavans(RightTriangle triangle) {
         boolean isAdd = true;
         int count = 0;
