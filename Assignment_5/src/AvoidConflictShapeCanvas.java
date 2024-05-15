@@ -24,136 +24,21 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
             isAdd = true;
             if (params.length == 1) {
                 Circle circle = new Circle(new Location(x, y), pattern, params[0]);
-                int[] center = new int[2];
-                center[0] = x + circle.getRadius();
-                center[1] = y + circle.getRadius();
-                if ( center[1] > canvas[0].length || center[0] > canvas.length || circle.getRadius() > FourMin(center[0], center[1], canvas.length - center[0], canvas[0].length - center[1])) {
-                    isAdd = false;
-                } else {
-                    int RowT = circle.location.getX();
-                    int ColT = circle.location.getY();
-                    FillLoop:
-                    for (int i = 0; i < circle.getGrids().length; i++) {
-                        for (int j = 0; j < circle.getGrids()[0].length; j++) {
-                            if (canvas[i + RowT][j + ColT] == ' ' && circle.getGrids()[i][j]==pattern) {
-                                canvas[i + RowT][j + ColT] = pattern;
-                            } else if (canvas[i+RowT][j+ColT]!=' ' && circle.getGrids()[i][j]==pattern){
-                                isAdd = false;
-                                break FillLoop;
-                            }
-                        }
-                    }
-                    if (!isAdd) {
-                        this.deleteAdd(pattern);
-                    } else {
-                        shapes.add(circle);
-                    }
-                }
+                isAdd = fillCanvas(circle);
             } else {
                 RightTriangle rightTriangle;
                 if (params[2] == 0) {
                     rightTriangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.LEFT_UP);
-                    if (canvas.length - rightTriangle.location.getX() < rightTriangle.getHeight() || canvas[0].length - rightTriangle.location.getY() < rightTriangle.getWidth()) {
-                        int rowT = rightTriangle.location.getX();
-                        int colT = rightTriangle.location.getY();
-                        FillLoop:
-                        for (int i = 0; i < rightTriangle.getGrids().length; i++) {
-                            for (int j = 0; j < rightTriangle.getGrids()[0].length; j++) {
-                                if (canvas[i + rowT][j + colT] == ' ' && rightTriangle.getGrids()[i][j] == pattern) {
-                                    canvas[i + rowT][j + colT] = rightTriangle.getGrids()[i][j];
-                                } else if (rightTriangle.getGrids()[i][j] == pattern && canvas[i + rowT][j + colT] != ' ') {
-                                    isAdd = false;
-                                    break FillLoop;
-                                }
-                            }
-                        }
-                        if (isAdd) {
-                            shapes.add(rightTriangle);
-                        } else {
-                            this.deleteAdd(pattern);
-                        }
-                    }
+                    isAdd = fillcanvas(rightTriangle);
                 } else if (params[2] == 1) {
                     rightTriangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.LEFT_DOWN);
-                    int[] Spoint = new int[2];
-                    Spoint[0] = rightTriangle.getHeight() + rightTriangle.location.getX();
-                    Spoint[1] = rightTriangle.location.getY();
-                    if (Spoint[0] > canvas.length || rightTriangle.getWidth() > canvas[0].length - Spoint[1]) {
-                        isAdd = false;
-                    } else {
-                        int rowT = rightTriangle.location.getX();
-                        int colT = rightTriangle.location.getY();
-                        FillLoop:
-                        for (int i = 0; i < rightTriangle.getGrids().length; i++) {
-                            for (int j = 0; j < rightTriangle.getGrids()[0].length; j++) {
-                                if (canvas[i + rowT][j + colT] == ' ' && rightTriangle.getGrids()[i][j] == pattern) {
-                                    canvas[i + rowT][j + colT] = rightTriangle.getGrids()[i][j];
-                                } else if (rightTriangle.getGrids()[i][j] == pattern && canvas[i + rowT][j + colT] != ' ') {
-                                    isAdd = false;
-                                    break FillLoop;
-                                }
-                            }
-                        }
-                        if (isAdd) {
-                            shapes.add(rightTriangle);
-                        } else {
-                            this.deleteAdd(pattern);
-                        }
-                    }
+                    isAdd = fillcanvas(rightTriangle);
                 } else if (params[2] == 2) {
                     rightTriangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.RIGHT_UP);
-                    int[] Spoint = new int[2];
-                    Spoint[0] = rightTriangle.location.getX();
-                    Spoint[1] = rightTriangle.location.getY() + rightTriangle.getWidth();
-                    if (Spoint[1] > canvas[0].length || rightTriangle.getHeight() > canvas.length - Spoint[0]) {
-                        isAdd = false;
-                    } else {
-                        int rowT = rightTriangle.location.getX();
-                        int colT = rightTriangle.location.getY();
-                        FillLoop:
-                        for (int i = 0; i < rightTriangle.getGrids().length; i++) {
-                            for (int j = 0; j < rightTriangle.getGrids()[0].length; j++) {
-                                if (canvas[i + rowT][j + colT] == ' ' && rightTriangle.getGrids()[i][j] == pattern) {
-                                    canvas[i + rowT][j + colT] = rightTriangle.getGrids()[i][j];
-                                } else if (rightTriangle.getGrids()[i][j] == pattern && canvas[i + rowT][j + colT] != ' ') {
-                                    isAdd = false;
-                                    break FillLoop;
-                                }
-                            }
-                        }
-                        if (isAdd) {
-                            shapes.add(rightTriangle);
-                        } else {
-                            this.deleteAdd(pattern);
-                        }
-                    }
+                    isAdd = fillcanvas(rightTriangle);
                 } else if (params[2] == 3) {
                     rightTriangle = new RightTriangle(new Location(x, y), pattern, params[0], params[1], Direction.RIGHT_DOWN);
-                    int[] Spoint = new int[2];
-                    Spoint[0] = rightTriangle.getHeight() + rightTriangle.location.getX();
-                    Spoint[1] = rightTriangle.getWidth() + rightTriangle.location.getY();
-                    if (Spoint[0] > canvas.length || Spoint[1] > canvas[0].length) {
-                        isAdd = false;
-                    } else {
-                        int rowT = rightTriangle.location.getX();
-                        int colT = rightTriangle.location.getY();
-                        FillLoop:
-                        for (int i = 0; i < rightTriangle.getGrids().length; i++) {
-                            for (int j = 0; j < rightTriangle.getGrids()[0].length; j++) {
-                                if (canvas[i + rowT][j + colT] == ' ' && rightTriangle.getGrids()[i][j] == pattern) {
-                                    canvas[i + rowT][j + colT] = rightTriangle.getGrids()[i][j];
-                                } else if (rightTriangle.getGrids()[i][j] == pattern && canvas[i + rowT][j + colT] != ' ') {
-                                    isAdd = false;
-                                    break FillLoop;
-                                }
-                            }
-                        }
-                        if (isAdd) {
-                            shapes.add(rightTriangle);
-                        } else {
-                            this.deleteAdd(pattern);
-                        }
-                    }
+                    isAdd = fillcanvas(rightTriangle);
                 }
             }
             if (isAdd) {
@@ -181,10 +66,9 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
         return count;
     }
 
-    @Override
     public List<Shape> getShapesByArea() {
         for (int i = 0; i < shapes.size() - 1; i++) {
-            for (int j = i; j < shapes.size() - i - 1; j++) {
+            for (int j = 0; j < shapes.size() - i - 1; j++) {
                 if (shapes.get(j + 1).area() < shapes.get(j).area()) {
                     Shape temp = shapes.get(j + 1);
                     shapes.set(j + 1, shapes.get(j));
@@ -202,7 +86,7 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
     @Override
     public List<Shape> getShapesByLocation() {
         for (int i = 0; i < shapes.size(); i++) {
-            for (int j = i; j < shapes.size() - i - 1; j++) {
+            for (int j = 0; j < shapes.size() - i - 1; j++) {
                 if (shapes.get(j + 1).location.getX() < shapes.get(j).location.getX()) {
                     Shape temp = shapes.get(j + 1);
                     shapes.set(j + 1, shapes.get(j));
@@ -226,19 +110,81 @@ public class AvoidConflictShapeCanvas implements ShapeCanvas {
         return canvas;
     }
 
-    public static int FourMin(int u, int v, int w, int x) {
-        int min1 = Math.min(u, v);
-        int min2 = Math.min(w, x);
-        return Math.min(min1, min2);
-    }
-
-    public void deleteAdd(char pattern) {
-        for (int i = 0; i < canvas.length; i++) {
-            for (int j = 0; j < canvas[0].length; j++) {
-                if (canvas[i][j] == pattern) {
-                    canvas[i][j] = ' ';
+    public boolean fillCanvas(Circle circle) {
+        boolean isAdd = true;
+        int rowT = circle.location.getX();
+        int colT = circle.location.getY();
+        int count = 0;
+        fillloop:
+        for (int i = 0; i < circle.getGrids().length; i++) {
+            for (int j = 0; j < circle.getGrids()[0].length; j++) {
+                try {
+                    if (canvas[i + rowT][j + colT] == ' ' && circle.getGrids()[i][j] == circle.pattern) {
+                        count++;
+                    }
+                } catch (ArrayIndexOutOfBoundsException a) {
+                    isAdd = false;
+                    break fillloop;
                 }
             }
         }
+        if (count==circle.area())
+        {
+            for (int i = 0; i < circle.getGrids().length; i++) {
+                for (int j = 0; j < circle.getGrids()[0].length; j++) {
+                    if (circle.getGrids()[i][j]==circle.pattern)
+                    {
+                        canvas[i + rowT][j + colT] = circle.pattern;
+                    }
+                }
+            }
+        }
+        else
+        {
+            isAdd=false;
+        }
+        if (isAdd) {
+            shapes.add(circle);
+        }
+        return isAdd;
+    }
+
+    public boolean fillcanvas(RightTriangle triangle) {
+        boolean isAdd = true;
+        int rowT = triangle.location.getX();
+        int colT = triangle.location.getY();
+        int count=0;
+        fillloop:
+        for (int i = 0; i < triangle.getGrids().length; i++) {
+            for (int j = 0; j < triangle.getGrids()[0].length; j++) {
+                try {
+                    if (canvas[i + rowT][j + colT] == ' ' && triangle.getGrids()[i][j] == triangle.pattern) {
+                        count++;
+                    }
+                } catch (ArrayIndexOutOfBoundsException a) {
+                    isAdd = false;
+                    break fillloop;
+                }
+            }
+        }
+        if (count==triangle.area())
+        {
+            for (int i = 0; i < triangle.getGrids().length; i++) {
+                for (int j = 0; j < triangle.getGrids()[0].length; j++) {
+                    if (triangle.getGrids()[i][j]==triangle.pattern)
+                    {
+                        canvas[i + rowT][j + colT] = triangle.pattern;
+                    }
+                }
+            }
+        }
+        else
+        {
+            isAdd=false;
+        }
+        if (isAdd) {
+            shapes.add(triangle);
+        }
+        return isAdd;
     }
 }

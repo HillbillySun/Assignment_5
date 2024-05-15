@@ -20,4 +20,5 @@ public abstract class Shape {
     public abstract void shrink();
 
     public abstract int area();
+
 }

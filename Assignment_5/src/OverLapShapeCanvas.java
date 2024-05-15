@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class OverLapShapeCanvas implements ShapeCanvas {
@@ -122,9 +123,7 @@ public class OverLapShapeCanvas implements ShapeCanvas {
                     Shape temp = shapes.get(j + 1);
                     shapes.set(j + 1, shapes.get(j));
                     shapes.set(j, temp);
-                }
-                else if (shapes.get(j + 1).location.getX() == shapes.get(j).location.getX() && shapes.get(j + 1).location.getY() == shapes.get(j).location.getY() && shapes.get(j+1).pattern < shapes.get(j).pattern)
-                {
+                } else if (shapes.get(j + 1).location.getX() == shapes.get(j).location.getX() && shapes.get(j + 1).location.getY() == shapes.get(j).location.getY() && shapes.get(j + 1).pattern < shapes.get(j).pattern) {
                     Shape temp = shapes.get(j + 1);
                     shapes.set(j + 1, shapes.get(j));
                     shapes.set(j, temp);
